@@ -58,16 +58,14 @@
                 </div>
 
                 <div class="input-group number-spinner">
-                    <button  id="first-class-decrease" class="btn btn-default"><i class="fas fa-minus"></i></button>
+                    <button onclick="handleTicketChange('first',false)" class="btn btn-default"><i class="fas fa-minus"></i></button>
                     <input  id="first-count" type="text" class="form-control text-center" value="1">
-                    <button id="first-class-increase"class="btn btn-default"><i class="fas fa-plus"></i></button>
+                    <button onclick="handleTicketChange('first',true)" class="btn btn-default"><i class="fas fa-plus"></i></button>
                  </div>
                  <h5 id="first-total">$150</h5>
-                 
-
                 <!-- <div class="plus-minus-btn">
                     <p>+ -</p>
-                </div> -->
+                </div> --> -->
             </div>
             
             <div class="input-group f-class">
@@ -76,15 +74,12 @@
                     <!-- <input class="inp-style inp-width" type="number" name=""> -->
                 </div>
                 <div class="input-group number-spinner">
-                    <button id="economy-class-decrease" class="btn btn-default"><i class="fas fa-minus"></i></button>
+                    <button onclick="handleTicketChange('economy',false)"  class="btn btn-default"><i class="fas fa-minus"></i></button>
                     <input  id="economy-count" type="text" class="form-control text-center" value="1">
-                    <button  id="economy-class-increase"class="btn btn-default"><i class="fas fa-plus"></i></button>
+                    <button onclick="handleTicketChange('economy',true)" class="btn btn-default"><i class="fas fa-plus"></i></button>
                  </div>
                  <h5 id="economy-total">$100</h5>
-
-                <!-- <div class="plus-minus-btn">
-                    <p> <span>+</span> <span>-</span> </p>
-                </div> -->
+ 
             </div>
             <div class="calculations">
                 <div class="amount">
@@ -92,16 +87,16 @@
                         <p>Subtotal</p>
                     </div>
                     <div class="right">
-                        <p>$500</p>
+                        <p id="Sub-total">$500</p>
                     </div>
                 </div>
 
                 <div class="amount">
                     <div class="left">
-                        <p>Charge 10% VAT</p>
+                        <p id="tax">Charge 10% VAT</p>
                     </div>
                     <div class="right">
-                        <p>$50</p>
+                        <p id='tax-amount'>$50</p>
                     </div>
                 </div>
                 <hr>
@@ -110,7 +105,7 @@
                         <h4>Total</h4>
                     </div>
                     <div class="right">
-                        <p>$550</p>
+                        <p id='total'>$550</p>
                     </div>
                 </div>
             </div>
@@ -122,72 +117,66 @@
             <p>Lorem ipsum dolor sit amet consectetur adipisicingelit. Provident voluptatibus quam fuga laborumalias veniam libero autem quasi maxime ullam vero nama imi dolor, architecto ab facilis eaque deserunt nobise voluptatibus quam</p>
         </div>
 <script>
-//     document.getElementById("first-class-increase").addEventListener('click',function(){
-//          handleFirstClass(true)
-//     })
-//     document.getElementById("first-class-decrease").addEventListener('click',function(){
-//          handleFirstClass(false)
-//     })
-//     function handleFirstClass(isIncrease){
-// const firstClassInput=document.getElementById("first-count")
-// const firstClassCount=parseFloat(firstClassInput.value)
-// let firstClassNewCount=firstClassCount
-// if(isIncrease==true){
-//     firstClassNewCount=firstClassCount+1;
-// }
-// if(isIncrease==false&&firstClassCount>0){
-//     firstClassNewCount=firstClassCount-1;
-// }
-// //   firstClassInput.value=firstClassNewCount
-// //   const firstClassTotal=firstClassNewCount*150
-//   document.getElementById("first-count").innerText=firstClassNewCount
 
+    function handleTicketChange(ticket ,isIncrease){
+                const ticketInput = document.getElementById(ticket + '-count');
+                const ticketCount = parseInt(ticketInput.value);
+                let ticketNewCount = ticketCount;
+                if (isIncrease == true) {
+                    ticketNewCount = ticketCount + 1;
+                }
+                if (isIncrease == false && ticketCount > 0) {
+                    ticketNewCount = ticketCount - 1;
+                }
+               document.getElementById(ticket + '-count').value = ticketNewCount;
+                let ticketTotal = 0;
+                if( ticket == 'first'){
+                    ticketTotal = ticketNewCount * 150;
+                }
+                if(ticket == 'economy'){
+                    ticketTotal = ticketNewCount * 100;
+                }
+            //    const ticketTotal = ticketNewCount * 150;
+               document.getElementById(ticket +'-total').innerText = ticketTotal;
+            //    return ticketTotal
+               calculateTotal()
+            }
 
-
-//     }
-    document.getElementById('first-class-increase').addEventListener('click',function(){
-            const firstClassInput=document.getElementById("first-count")
-            const firstClassCount=parseFloat(firstClassInput.value)
-            const firstClassNewCount=firstClassCount+1;
-            firstClassInput.value=firstClassNewCount;
-             const firstClassTotal=firstClassNewCount*150;
-             document.getElementById('first-total').innerText= firstClassTotal
-         })
-
-         document.getElementById('first-class-decrease').addEventListener('click',function(){
-            const firstClassInput=document.getElementById("first-count")
-            const firstClassCount=parseFloat(firstClassInput.value)
-            const firstClassNewCount=firstClassCount-1;
-            firstClassInput.value=firstClassNewCount;
-            const firstClassTotal=firstClassNewCount*150;
-             document.getElementById('first-total').innerText= firstClassTotal
-         })
-
-         document.getElementById('economy-class-increase').addEventListener('click',function(){
-            const economyClassInput=document.getElementById("economy-count")
-            const economyClassCount=parseInt(economyClassInput.value)
-            const economyClassNewCount=economyClassCount+1;
-            economyClassInput.value=economyClassNewCount;
+            function calculateTotal(){
+                
+                const firstCount = getInputValue('first')
+                
+                const economyCount = getInputValue('economy')
+                const totalNewPrice = firstCount * 150 + economyCount * 100;
+                const totalPrice=parseInt(totalNewPrice.value)
+                document.getElementById("sub-total").innerText = '$' + totalPrice
+        
+                const tax=totalPrice*0.1;
+                document.getElementById("tax-amount").innerText='$'+tax
+                const total=totalPrice+tax;
+                document.getElementById("total").innerText='$'+total;
+            }
+            function getInputValue(ticket){
+                const ticketInput = document.getElementById(ticket+'-count')
+                const ticketCount = parseInt(ticketInput.value);
+                return ticketCount;
+            }
+            // document.getElementById('economy-class-decrease').addEventListener('click',function(){
+            // const economyClassInput=document.getElementById("economy-count")
+            // const economyClassCount=parseInt(economyClassInput.value)
+            // const economyClassNewCount=economyClassCount-1;
+            // economyClassInput.value=economyClassNewCount;
             
-             const economyClassTotal=economyClassNewCount*100;
-             document.getElementById('economy-total').innerText= economyClassTotal
-         })
-         document.getElementById('economy-class-decrease').addEventListener('click',function(){
-            const economyClassInput=document.getElementById("economy-count")
-            const economyClassCount=parseInt(economyClassInput.value)
-            const economyClassNewCount=economyClassCount-1;
-            economyClassInput.value=economyClassNewCount;
-            
-             const economyClassTotal=economyClassNewCount*100;
-             document.getElementById('economy-total').innerText= economyClassTotal
-         })
-
+            //  const economyClassTotal=economyClassNewCount*100;
+            //  document.getElementById('economy-total').innerText= economyClassTotal
          
-
 </script>
 
 
-    </section>
+
+
+
+</section>
 
     <!--Thank You-->
 </body>
